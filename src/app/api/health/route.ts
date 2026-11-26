@@ -25,9 +25,11 @@ export async function GET() {
   await Promise.all(
     tables.map(async (t) => {
       const { count, error } = await db.from(t).select("*", { count: "exact", head: true });
-      if (error) failed = true;
+      // A failed count request can come back with no error text, so a missing count is a failure too.
+      const bad = Boolean(error) || count === null;
+      if (bad) failed = true;
       // Content counts are public anyway. Booking volume is not, so it reports only "ok".
-      counts[t] = error ? "error: run supabase/schema.sql" : t === "bookings" ? "ok" : (count ?? 0);
+      counts[t] = bad ? "error: table not reachable. Check SUPABASE_URL and run supabase/schema.sql" : t === "bookings" ? "ok" : count;
     }),
   );
   const bucket = await db.storage.getBucket(RESUME_BUCKET);
@@ -38,7 +40,7 @@ export async function GET() {
     db.auth.admin.listUsers({ page: 1, perPage: 1 }),
     db.from("admin_users").select("user_id", { count: "exact", head: true }),
   ]);
-  if (auth.error || admins.error) failed = true;
+  if (auth.error || admins.error || admins.count === null) failed = true;
 
   return Response.json(
     {
@@ -46,7 +48,7 @@ export async function GET() {
       rows: counts,
       resumeBucket: bucket.error ? `error: ${bucket.error.message}` : "ready",
       authService: auth.error ? `error: ${auth.error.message}` : "ready",
-      adminUsers: admins.error ? `error: ${admins.error.message}` : (admins.count ?? 0),
+      adminUsers: admins.error || admins.count === null ? "error: table not reachable" : admins.count,
       // Which kind of key the server holds. Never the key itself.
       keyType: env.supabaseSecretKey.startsWith("sb_secret_")
         ? "secret"
