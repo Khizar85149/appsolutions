@@ -8,7 +8,7 @@ import type { Faq } from "@/lib/types";
 
 const title = "Contact Us";
 const description =
-  "Send Nexora Digital your project brief and a senior engineer will reply within one business day. Based in Canada, working with clients across North America, Europe and the Middle East.";
+  "Send Apps Solutions Tech your project brief and a senior engineer will reply within one business day. Based in Canada, working with clients across North America, Europe and the Middle East.";
 
 export const metadata: Metadata = pageMetadata({ title, description, path: "/contact" });
 

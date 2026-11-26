@@ -153,7 +153,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Nexora */}
+      {/* Why us */}
       <section className="section border-t border-rule bg-paper-deep">
         <div className="wrap grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">

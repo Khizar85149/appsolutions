@@ -21,7 +21,11 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 30 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 10, background: "#c5f569", display: "flex" }} />
+          <svg width="44" height="44" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="7" fill="#c5f569" />
+            <path d="M7.25 20.5 14 7.25l6.75 13.25" stroke="#151613" strokeWidth="2.5" strokeLinecap="square" />
+            <rect x="12" y="16.5" width="4" height="4" fill="#151613" />
+          </svg>
           {site.name}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>

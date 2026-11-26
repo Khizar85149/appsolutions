@@ -9,7 +9,7 @@ import { site } from "@/lib/site";
 
 const title = "Book a Free Consultation";
 const description =
-  "Choose a free session with a senior Nexora Digital engineer. Pick a time that suits you and receive a written summary of scope, risks and budget within two business days.";
+  "Choose a free session with a senior Apps Solutions Tech engineer. Pick a time that suits you and receive a written summary of scope, risks and budget within two business days.";
 
 export const metadata: Metadata = pageMetadata({ title, description, path: "/consultation" });
 

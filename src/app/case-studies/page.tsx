@@ -8,7 +8,7 @@ import { CONSULTATION_HREF, industryNav } from "@/lib/site";
 
 const title = "Case Studies: Software We Have Shipped";
 const description =
-  "Read how Nexora Digital delivered POS, hospital management, ERP, AI assistants and mobile apps for clients in Canada and abroad, with the numbers that followed.";
+  "Read how Apps Solutions Tech delivered POS, hospital management, ERP, AI assistants and mobile apps for clients in Canada and abroad, with the numbers that followed.";
 
 export const metadata: Metadata = pageMetadata({ title, description, path: "/case-studies" });
 

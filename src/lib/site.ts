@@ -5,17 +5,17 @@ import type { IconKey } from "./types";
  * Everything marked REPLACE is placeholder data to confirm before launch.
  */
 export const site = {
-  name: "Nexora Digital",
-  legalName: "Nexora Digital Inc.",
+  name: "Apps Solutions Tech",
+  legalName: "Apps Solutions Tech Inc.",
   /** Live domain. No trailing slash. Canonical URLs, the sitemap and social tags are all built from this. */
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://appsolutiontech.com").replace(/\/$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://appssolutionstech.com").replace(/\/$/, ""),
   /** Date the content last changed, reported to search engines in the sitemap. Update when you publish edits. */
   lastUpdated: "2026-11-26",
   tagline: "Software engineering for companies that cannot afford a second attempt.",
   description:
-    "Nexora Digital builds ERP systems, AI chatbots and automation, mobile apps and POS software. A Canadian company with engineers from the top 3% of applicants.",
-  email: "hello@appsolutiontech.com", // REPLACE
-  careersEmail: "careers@appsolutiontech.com", // REPLACE
+    "Apps Solutions Tech builds ERP systems, AI chatbots and automation, mobile apps and POS software. A Canadian company with engineers from the top 3% of applicants.",
+  email: "hello@appssolutionstech.com", // REPLACE
+  careersEmail: "careers@appssolutionstech.com", // REPLACE
   phoneCanada: "+1 (000) 000-0000", // REPLACE
   copyrightYear: 2026,
   offices: [

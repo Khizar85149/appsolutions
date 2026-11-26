@@ -61,7 +61,7 @@ export function Header() {
 
   return (
     <header className="on-ink sticky top-0 z-50 border-b border-ink-line bg-ink text-paper">
-      <div className="wrap flex h-16 items-center justify-between gap-6 md:h-[4.5rem]">
+      <div className="wrap flex h-16 items-center justify-between gap-3 sm:gap-6 md:h-[4.5rem]">
         <Logo />
 
         <nav aria-label="Primary" className="hidden lg:block">

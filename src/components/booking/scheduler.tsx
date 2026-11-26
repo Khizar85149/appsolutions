@@ -202,7 +202,7 @@ export function Scheduler({ session }: { session: ConsultationType }) {
     const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `nexora-${session.slug}.ics`;
+    a.download = `apps-solutions-${session.slug}.ics`;
     document.body.appendChild(a);
     a.click();
     a.remove();

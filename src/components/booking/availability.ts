@@ -230,7 +230,7 @@ export function buildIcs(input: {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Nexora Digital//Consultation//EN",
+    "PRODID:-//Apps Solutions Tech//Consultation//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",

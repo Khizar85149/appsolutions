@@ -11,7 +11,7 @@ import type { IconKey } from "@/lib/types";
 
 const title = "Careers: Engineering, Design and Delivery Roles";
 const description =
-  "Join Nexora Digital in Toronto or remotely. We hire the top 3% of applicants through a four stage process and put them on software that businesses run on.";
+  "Join Apps Solutions Tech in Toronto or remotely. We hire the top 3% of applicants through a four stage process and put them on software that businesses run on.";
 
 export const metadata: Metadata = pageMetadata({ title, description, path: "/careers" });
 

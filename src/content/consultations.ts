@@ -1,6 +1,6 @@
 import type { ConsultationType } from "@/lib/types";
 
-const HOST = "Nexora Solutions Team";
+const HOST = "Apps Solutions Tech Team";
 
 export const consultations: ConsultationType[] = [
   {

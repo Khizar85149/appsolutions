@@ -8,7 +8,7 @@ import type { IconKey } from "@/lib/types";
 
 const title = "About Us: A Canadian Software Engineering Company";
 const description =
-  "Nexora Digital is a Canadian software company with a senior engineering team. Learn how we hire the top 3%, run delivery and protect your IP.";
+  "Apps Solutions Tech is a Canadian software company with a senior engineering team. Learn how we hire the top 3%, run delivery and protect your IP.";
 
 export const metadata: Metadata = pageMetadata({ title, description, path: "/about" });
 
@@ -58,7 +58,7 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow="About Nexora Digital"
+        eyebrow="About Apps Solutions Tech"
         title="Senior engineers. One accountable Canadian team."
         lead="We started this company to fix one problem: software teams with real talent and nobody answerable to the client. Our contracts, delivery managers and commitments are in Canada. Our engineers come from the top 3% of the people who apply."
         crumbs={[{ label: "About" }]}
@@ -89,7 +89,7 @@ export default function AboutPage() {
               table: in their time zone, under their legal system, accountable for the outcome.
             </p>
             <p className="body text-stone">
-              Nexora Digital is built around that gap. Our Canadian head office owns the client relationship, the
+              Apps Solutions Tech is built around that gap. Our Canadian head office owns the client relationship, the
               contract and the delivery plan. Engineering and design are staffed only by people who pass a four stage
               hiring process that about 3% of applicants complete.
             </p>
@@ -101,7 +101,7 @@ export default function AboutPage() {
       </section>
 
       <section className="wrap pb-18 md:pb-28">
-        <h2 className="sr-only">Nexora Digital in numbers</h2>
+        <h2 className="sr-only">Apps Solutions Tech in numbers</h2>
         <StatRow stats={site.stats} />
       </section>
 
