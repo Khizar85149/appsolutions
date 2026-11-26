@@ -4,7 +4,7 @@ import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { CaseCard } from "@/components/case-card";
 import { Icon } from "@/components/icon";
 import { RevealGroup } from "@/components/motion";
-import { ArrowLink, Button, CtaBand, Eyebrow, FaqJsonLd, FaqList, HeroBackdrop, SectionHeading, StatRow } from "@/components/ui";
+import { ArrowLink, Button, CtaBand, Eyebrow, FaqJsonLd, FaqList, HeroBackdrop, HeroHeading, SectionHeading, StatRow } from "@/components/ui";
 import { caseStudies } from "@/content/case-studies";
 import { CONSULTATION_HREF, industryNav, serviceNav, site } from "@/lib/site";
 import type { Faq, IconKey } from "@/lib/types";
@@ -91,11 +91,12 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section className="on-ink relative isolate overflow-hidden bg-ink text-paper">
-        <HeroBackdrop src="/images/hero-towers.jpg" priority />
+        <HeroBackdrop src="/images/hero-towers.jpg" />
         <div className="wrap flex min-h-[calc(100svh-4rem)] flex-col justify-end pb-10 pt-20 md:min-h-[calc(100svh-4.5rem)] md:pb-14 md:pt-28">
           <div className="max-w-4xl">
-            <p className="text-[0.9375rem] text-paper/80">A Canadian software engineering company</p>
-            <h1 className="display mt-5">Serious software, built by the top 3% of engineers.</h1>
+            <HeroHeading label="Custom software development company in Canada" size="display">
+              Serious software, built by the top 3% of engineers.
+            </HeroHeading>
             <p className="lead mt-7 max-w-2xl text-paper/75">
               We design, build and run ERP systems, AI automation, mobile apps and custom platforms for companies
               whose operations depend on them. Built by senior engineers and delivered on a scope and price you approve before we start.

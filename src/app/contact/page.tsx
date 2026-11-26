@@ -53,7 +53,8 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
-        eyebrow="Contact"
+        eyebrow="Contact Apps Solutions Tech"
+        path="/contact"
         title="Tell us what you need built."
         lead="Write a few lines about the project. A senior engineer will read it and reply within one business day with questions, a first opinion and a suggested next step."
         crumbs={[{ label: "Contact" }]}
@@ -146,7 +147,15 @@ export default function ContactPage() {
             url: site.url,
             email: site.email,
             contactPoint: [
-              { "@type": "ContactPoint", contactType: "sales", telephone: site.phoneCanada, areaServed: "CA", availableLanguage: "English" },
+              {
+                "@type": "ContactPoint",
+                contactType: "sales",
+                email: site.email,
+                // The phone number is published to search engines only once it is a real one.
+                ...(/000/.test(site.phoneCanada) ? {} : { telephone: site.phoneCanada }),
+                areaServed: ["CA", "US"],
+                availableLanguage: "English",
+              },
             ],
           },
         }}

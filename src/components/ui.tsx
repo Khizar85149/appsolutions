@@ -90,13 +90,33 @@ export function SectionHeading({
  * Photographic backdrop for dark page headers. Desaturated and held back
  * behind an ink wash so the headline stays the loudest thing on screen.
  */
-export function HeroBackdrop({ src, priority = false }: { src: string; priority?: boolean }) {
+export function HeroBackdrop({ src }: { src: string }) {
   return (
     <div aria-hidden="true" className="absolute inset-0 -z-10">
-      <Image src={src} alt="" fill priority={priority} sizes="100vw" quality={60} className="object-cover opacity-45 grayscale" />
+      {/* The photo files are already desaturated and darkened, so no CSS filter is needed. */}
+      <Image src={src} alt="" fill preload fetchPriority="high" loading="eager" sizes="100vw" quality={60} className="object-cover" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,#151613_0%,rgba(21,22,19,0.88)_45%,rgba(21,22,19,0.55)_100%)]" />
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(0deg,#151613,transparent)]" />
     </div>
+  );
+}
+
+/**
+ * Page heading for dark headers. The short keyword label and the headline
+ * are one <h1>, so search engines read "ERP System Development: Stop running
+ * a company on spreadsheets" while visitors see a label above a headline.
+ */
+export function HeroHeading({ label, children, size = "h1" }: { label?: string; children: ReactNode; size?: "h1" | "display" }) {
+  return (
+    <h1>
+      {label && (
+        <>
+          <span className="eyebrow block text-lime">{label}</span>
+          <span className="sr-only">: </span>
+        </>
+      )}
+      <span className={`${size} block ${label ? "mt-4" : ""}`}>{children}</span>
+    </h1>
   );
 }
 
@@ -111,13 +131,17 @@ export function PageHero({
   title,
   lead,
   crumbs,
+  path,
   children,
   aside,
 }: {
+  /** Short keyword label. Rendered as the first part of the page's <h1>. */
   eyebrow?: string;
   title: ReactNode;
   lead?: ReactNode;
   crumbs?: Crumb[];
+  /** This page's path. When given, breadcrumb structured data is emitted. */
+  path?: string;
   /** Buttons or meta shown under the lead. */
   children?: ReactNode;
   /** Optional right column on large screens. */
@@ -125,7 +149,7 @@ export function PageHero({
 }) {
   return (
     <section className="on-ink relative isolate overflow-hidden bg-ink text-paper">
-      <HeroBackdrop src="/images/hero-interior.jpg" priority />
+      <HeroBackdrop src="/images/hero-interior.jpg" />
       <div className="wrap pb-16 pt-10 md:pb-24 md:pt-14">
         {crumbs && (
           <nav aria-label="Breadcrumb" className="mb-10 md:mb-14">
@@ -154,14 +178,27 @@ export function PageHero({
         )}
         <div className={aside ? "grid gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-16" : ""}>
           <div className="max-w-4xl">
-            {eyebrow && <Eyebrow tone="dark">{eyebrow}</Eyebrow>}
-            <h1 className={`h1 ${eyebrow ? "mt-4" : ""}`}>{title}</h1>
+            <HeroHeading label={eyebrow}>{title}</HeroHeading>
             {lead && <p className="lead mt-6 max-w-2xl text-fog">{lead}</p>}
             {children && <div className="mt-9">{children}</div>}
           </div>
           {aside && <div className="lg:pt-2">{aside}</div>}
         </div>
       </div>
+      {crumbs && path && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [{ label: "Home", href: "/" }, ...crumbs].map((c, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: c.label,
+              item: `${site.url}${c.href ?? path}`.replace(/\/$/, ""),
+            })),
+          }}
+        />
+      )}
     </section>
   );
 }

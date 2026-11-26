@@ -45,12 +45,10 @@ export default async function ServicePage({ params }: Props) {
         aside={
           <dl className="border-t border-ink-line">
             {facts.map((f) => (
-              <div key={f.label} className="flex items-start gap-4 border-b border-ink-line py-5">
-                <Icon name={f.icon} size={22} className="mt-0.5 shrink-0 text-lime" />
-                <div>
-                  <dt className="eyebrow text-fog">{f.label}</dt>
-                  <dd className="mt-2 text-[0.9375rem] leading-snug">{f.value}</dd>
-                </div>
+              <div key={f.label} className="relative border-b border-ink-line py-5 pl-10">
+                <Icon name={f.icon} size={22} className="absolute left-0 top-5 text-lime" />
+                <dt className="eyebrow text-fog">{f.label}</dt>
+                <dd className="mt-2 text-[0.9375rem] leading-snug">{f.value}</dd>
               </div>
             ))}
           </dl>

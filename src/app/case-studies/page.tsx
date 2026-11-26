@@ -26,7 +26,8 @@ export default function CaseStudiesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Case studies"
+        eyebrow="Software development case studies"
+        path="/case-studies"
         title="Results our clients can show their board."
         lead="Each story covers the problem, the decisions we made and the numbers measured after launch. Client names are withheld under NDA."
         crumbs={[{ label: "Case Studies" }]}
@@ -42,6 +43,7 @@ export default function CaseStudiesPage() {
       </PageHero>
 
       <section className="wrap section">
+        <h2 className="sr-only">All case studies</h2>
         <CaseFilter
           options={options}
           items={caseStudies.map((c) => ({ slug: c.slug, industry: c.industry, card: <CaseCard study={c} /> }))}

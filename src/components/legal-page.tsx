@@ -21,7 +21,7 @@ export function LegalPage({
 }) {
   return (
     <>
-      <PageHero eyebrow="Legal" title={title} lead={lead} crumbs={[{ label: crumb }]} />
+      <PageHero eyebrow="Legal" title={title} lead={lead} crumbs={[{ label: crumb }]} path={`/${crumb.toLowerCase()}`} />
       <section className="section">
         <div className="wrap">
           <div className="max-w-3xl">

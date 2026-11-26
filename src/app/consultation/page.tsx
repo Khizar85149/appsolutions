@@ -30,7 +30,8 @@ export default function ConsultationPage() {
   return (
     <>
       <PageHero
-        eyebrow="Free consultation"
+        eyebrow="Free software consultation"
+        path="/consultation"
         title="Pick a session. Talk to an engineer this week."
         lead="Every call is with someone who builds software for a living. No sales script and no obligation. Choose the session closest to your situation and select a time."
         crumbs={[{ label: "Consultation" }]}

@@ -17,7 +17,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const session = getConsultation(slug);
   if (!session) return {};
-  return pageMetadata({ title: session.seo.title, description: session.seo.description, path: `/consultation/${session.slug}`, type: "website" });
+  return {
+    ...pageMetadata({ title: session.seo.title, description: session.seo.description, path: `/consultation/${session.slug}` }),
+    // Each booking page is a scheduler with little text. They stay reachable through
+    // /consultation but are kept out of search results so they do not dilute it.
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function ConsultationBookingPage({ params }: Props) {

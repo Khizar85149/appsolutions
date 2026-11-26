@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { jobs } from "@/content/careers";
 import { caseStudies } from "@/content/case-studies";
-import { consultations } from "@/content/consultations";
 import { industryNav, serviceNav, site } from "@/lib/site";
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -37,7 +36,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...serviceNav.map((s) => entry(`/services/${s.slug}`, 0.8, "monthly")),
     ...industryNav.map((s) => entry(`/industries/${s.slug}`, 0.8, "monthly")),
     ...caseStudies.map((s) => entry(`/case-studies/${s.slug}`, 0.7, "monthly")),
-    ...consultations.map((s) => entry(`/consultation/${s.slug}`, 0.6, "monthly")),
     ...jobs.map((j) => entry(`/careers/${j.slug}`, 0.5, "weekly", j.posted)),
     entry("/privacy", 0.2, "yearly"),
     entry("/terms", 0.2, "yearly"),

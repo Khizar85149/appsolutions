@@ -37,7 +37,8 @@ export default function IndustriesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Industries"
+        eyebrow="Industry software development"
+        path="/industries"
         title="Software shaped by how your sector works."
         lead="A hospital, a restaurant group and a lender have different regulations, different peak hours and different costs of failure. We staff each project with engineers who have shipped in that sector before."
         crumbs={[{ label: "Industries" }]}

@@ -13,7 +13,7 @@ export const site = {
   lastUpdated: "2026-11-26",
   tagline: "Software engineering for companies that cannot afford a second attempt.",
   description:
-    "Apps Solutions Tech builds ERP systems, AI chatbots and automation, mobile apps and POS software. A Canadian company with engineers from the top 3% of applicants.",
+    "Apps Solutions Tech is a Canadian custom software development company building ERP systems, AI chatbots and automation, mobile apps and POS software.",
   email: "hello@appssolutionstech.com", // REPLACE
   careersEmail: "careers@appssolutionstech.com", // REPLACE
   phoneCanada: "+1 (000) 000-0000", // REPLACE

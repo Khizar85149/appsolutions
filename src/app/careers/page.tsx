@@ -52,7 +52,8 @@ export default function CareersPage() {
   return (
     <>
       <PageHero
-        eyebrow="Careers"
+        eyebrow="Careers at Apps Solutions Tech"
+        path="/careers"
         title="Do the best work of your career, with people at your level."
         lead="We hire about 3 in every 100 applicants. Those who join work in small senior teams, speak to clients directly and ship software that businesses depend on every day."
         crumbs={[{ label: "Careers" }]}

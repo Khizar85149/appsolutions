@@ -37,7 +37,8 @@ export default function ServicesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Services"
+        eyebrow="Software development services"
+        path="/services"
         title="Eight practices. One team accountable for the result."
         lead="We build the systems a business depends on every day: the ERP, the app, the point of sale, the automation behind them. Each practice is led by a senior engineer who has shipped that kind of system before."
         crumbs={[{ label: "Services" }]}

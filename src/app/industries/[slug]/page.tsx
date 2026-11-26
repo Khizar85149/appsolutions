@@ -34,7 +34,7 @@ export default async function IndustryPage({ params }: Props) {
   return (
     <>
       <PageHero
-        eyebrow={industry.name}
+        eyebrow={`${industry.name} software development`}
         title={industry.heroTitle}
         lead={industry.heroLead}
         crumbs={[{ href: "/industries", label: "Industries" }, { label: industry.name }]}

@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { JsonLd } from "@/components/ui";
-import { site } from "@/lib/site";
+import { serviceNav, site } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | Custom Software, ERP and AI Development`,
+    default: `Custom Software Development Company | ${site.name}`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: site.name,
     locale: "en_CA",
     url: site.url,
-    title: `${site.name} | Custom Software, ERP and AI Development`,
+    title: `Custom Software Development Company | ${site.name}`,
     description: site.description,
   },
   twitter: { card: "summary_large_image" },
@@ -44,7 +44,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en-CA" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
         <noscript>
           <style>{`.reveal-group > * { opacity: 1 !important; transform: none !important; }`}</style>
@@ -84,10 +84,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             description: site.description,
             address: site.offices.map((o) => ({
               "@type": "PostalAddress",
-              addressLocality: o.city,
-              addressCountry: o.country,
+              addressLocality: o.city.split(",")[0],
+              addressRegion: "ON",
+              addressCountry: "CA",
             })),
-            sameAs: [site.social.linkedin],
+            areaServed: ["CA", "US"],
+            knowsAbout: serviceNav.map((s) => s.name),
+            // Profiles and phone numbers are published only once they are real.
+            ...(/linkedin\.com\/(company|in)\//.test(site.social.linkedin) ? { sameAs: [site.social.linkedin] } : {}),
           }}
         />
       </body>

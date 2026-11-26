@@ -62,6 +62,7 @@ export default function AboutPage() {
         title="Senior engineers. One accountable Canadian team."
         lead="We started this company to fix one problem: software teams with real talent and nobody answerable to the client. Our contracts, delivery managers and commitments are in Canada. Our engineers come from the top 3% of the people who apply."
         crumbs={[{ label: "About" }]}
+        path="/about"
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button href={CONSULTATION_HREF} variant="lime" arrow>
