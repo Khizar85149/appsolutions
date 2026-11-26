@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { isSupabaseConfigured } from "@/server/env";
+import { env, isSupabaseConfigured } from "@/server/env";
 import { getSupabase, RESUME_BUCKET } from "@/server/supabase";
 
 /**
@@ -33,11 +33,28 @@ export async function GET() {
   const bucket = await db.storage.getBucket(RESUME_BUCKET);
   if (bucket.error) failed = true;
 
+  // Admin sign-in needs the Auth service and at least one row in admin_users.
+  const [auth, admins] = await Promise.all([
+    db.auth.admin.listUsers({ page: 1, perPage: 1 }),
+    db.from("admin_users").select("user_id", { count: "exact", head: true }),
+  ]);
+  if (auth.error || admins.error) failed = true;
+
   return Response.json(
     {
       database: failed ? "error" : "connected",
       rows: counts,
-      resumeBucket: bucket.error ? "missing: run supabase/schema.sql" : "ready",
+      resumeBucket: bucket.error ? `error: ${bucket.error.message}` : "ready",
+      authService: auth.error ? `error: ${auth.error.message}` : "ready",
+      adminUsers: admins.error ? `error: ${admins.error.message}` : (admins.count ?? 0),
+      // Which kind of key the server holds. Never the key itself.
+      keyType: env.supabaseSecretKey.startsWith("sb_secret_")
+        ? "secret"
+        : env.supabaseSecretKey.startsWith("sb_publishable_")
+          ? "publishable (wrong: use the secret key)"
+          : env.supabaseSecretKey.startsWith("eyJ")
+            ? "legacy JWT"
+            : "unrecognised",
     },
     { status: failed ? 503 : 200, headers },
   );
