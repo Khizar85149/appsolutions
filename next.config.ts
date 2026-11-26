@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   poweredByHeader: false,
   experimental: {
+    // Admin pages are rendered per request. Keeping a visited one in the browser
+    // for 30 seconds makes switching back and forth between sections instant.
+    // Saving, deleting or changing a status clears this at once.
+    staleTimes: { dynamic: 30 },
     serverActions: {
       // Job applications carry a résumé of up to 4 MB (see src/lib/uploads.ts).
       bodySizeLimit: "5mb",

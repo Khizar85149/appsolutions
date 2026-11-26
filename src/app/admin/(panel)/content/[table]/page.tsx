@@ -18,11 +18,10 @@ const DESCRIPTIONS: Record<string, string> = {
 };
 
 export default async function ContentListPage({ params }: Props) {
-  await requireAdmin();
   const { table } = await params;
   if (!isContentTable(table)) notFound();
   const def = TABLES[table];
-  const rows = await listContent(table);
+  const [, rows] = await Promise.all([requireAdmin(), listContent(table)]);
 
   return (
     <>

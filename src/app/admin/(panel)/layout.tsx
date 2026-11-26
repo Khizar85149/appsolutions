@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import {
   ArrowSquareOut,
   Briefcase,
@@ -27,9 +28,30 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default async function PanelLayout({ children }: { children: React.ReactNode }) {
+/** Count shown beside an inbox link. Loaded after the frame, so it never delays a page. */
+async function Count({ of }: { of: "enquiries" | "bookings" | "applications" }) {
+  await requireAdmin();
+  const n = (await getBadges())[of];
+  if (!n) return null;
+  return <span className="ml-auto rounded-full bg-lime px-1.5 text-[0.6875rem] font-semibold leading-5 text-ink">{n}</span>;
+}
+
+async function AdminEmail() {
   const admin = await requireAdmin();
-  const badges = await getBadges();
+  return <span title={admin.email}>{admin.email}</span>;
+}
+
+/**
+ * The frame around every admin page. It contains no data of its own, so it
+ * appears at once and stays put while moving between sections. Who may see
+ * what is decided by src/proxy.ts and by requireAdmin() in each page.
+ */
+export default function PanelLayout({ children }: { children: React.ReactNode }) {
+  const count = (of: "enquiries" | "bookings" | "applications") => (
+    <Suspense fallback={null}>
+      <Count of={of} />
+    </Suspense>
+  );
   const icon = { size: 17, weight: "light" as const, "aria-hidden": true };
 
   return (
@@ -58,15 +80,15 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             </NavLink>
           </div>
           <Group label="Inbox">
-            <NavLink href="/admin/enquiries" badge={badges.enquiries}>
+            <NavLink href="/admin/enquiries" badge={count("enquiries")}>
               <EnvelopeSimple {...icon} />
               Enquiries
             </NavLink>
-            <NavLink href="/admin/bookings" badge={badges.bookings}>
+            <NavLink href="/admin/bookings" badge={count("bookings")}>
               <CalendarBlank {...icon} />
               Bookings
             </NavLink>
-            <NavLink href="/admin/applications" badge={badges.applications}>
+            <NavLink href="/admin/applications" badge={count("applications")}>
               <UsersThree {...icon} />
               Applications
             </NavLink>
@@ -96,8 +118,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         </nav>
 
         <div className="hidden border-t border-ink-line p-3 lg:block">
-          <p className="truncate px-3 py-2 text-xs text-fog" title={admin.email}>
-            {admin.email}
+          <p className="min-h-8 truncate px-3 py-2 text-xs text-fog">
+            <Suspense fallback={null}>
+              <AdminEmail />
+            </Suspense>
           </p>
           <a
             href="/"

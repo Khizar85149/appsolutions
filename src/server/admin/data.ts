@@ -1,9 +1,12 @@
 import "server-only";
+import { cache } from "react";
+import { connection } from "next/server";
 import { TABLES, type ContentTable, type InboxTable, type RowValues } from "@/lib/admin-schema";
 import { getSupabase } from "../supabase";
 
 /**
- * Reads for the admin panel. Unlike the public site these are never cached:
+ * Reads for the admin panel. Each one waits for a live request (connection()),
+ * so nothing here ever runs while pages are prebuilt. Unlike the public site these are never cached:
  * an admin always sees the database as it is right now, including records
  * that are not published.
  */
@@ -76,6 +79,7 @@ export const isUuid = (value: string) => UUID.test(value);
 /* ------------------------------------------------------------------ */
 
 export async function listContent(table: ContentTable): Promise<RowValues[]> {
+  await connection();
   const db = getSupabase();
   if (!db) return [];
   const { data, error } = await db.from(table).select("*").order("position").order("slug");
@@ -84,6 +88,7 @@ export async function listContent(table: ContentTable): Promise<RowValues[]> {
 }
 
 export async function getContent(table: ContentTable, slug: string): Promise<RowValues | null> {
+  await connection();
   const db = getSupabase();
   if (!db) return null;
   const { data, error } = await db.from(table).select("*").eq("slug", slug).limit(1);
@@ -102,6 +107,7 @@ export async function listOptions(table: ContentTable): Promise<{ slug: string; 
 /* ------------------------------------------------------------------ */
 
 export async function listInbox<T extends InboxTable>(table: T, status?: string): Promise<InboxRows[T][]> {
+  await connection();
   const db = getSupabase();
   if (!db) return [];
   let query = db.from(table).select("*");
@@ -112,6 +118,7 @@ export async function listInbox<T extends InboxTable>(table: T, status?: string)
 }
 
 export async function getInboxItem<T extends InboxTable>(table: T, id: string): Promise<InboxRows[T] | null> {
+  await connection();
   const db = getSupabase();
   if (!db || !isUuid(id)) return null;
   const { data, error } = await db.from(table).select("*").eq("id", id).limit(1);
@@ -134,6 +141,7 @@ export async function listBookings(view: "upcoming" | "past" | "cancelled"): Pro
 }
 
 export async function listBlocks(): Promise<AvailabilityBlock[]> {
+  await connection();
   const db = getSupabase();
   if (!db) return [];
   const { data, error } = await db
@@ -169,6 +177,7 @@ export async function getOverview(): Promise<Overview> {
     latestMessages: [],
     latestApplications: [],
   };
+  await connection();
   const db = getSupabase();
   if (!db) return empty;
   const now = new Date().toISOString();
@@ -194,7 +203,8 @@ export async function getOverview(): Promise<Overview> {
 }
 
 /** Counts for the badges in the sidebar. */
-export async function getBadges(): Promise<{ enquiries: number; applications: number; bookings: number }> {
+export const getBadges = cache(async (): Promise<{ enquiries: number; applications: number; bookings: number }> => {
+  await connection();
   const db = getSupabase();
   if (!db) return { enquiries: 0, applications: 0, bookings: 0 };
   const count = { count: "exact" as const, head: true };
@@ -204,4 +214,4 @@ export async function getBadges(): Promise<{ enquiries: number; applications: nu
     db.from("bookings").select("id", count).eq("status", "confirmed").gt("starts_at", new Date().toISOString()),
   ]);
   return { enquiries: m.count ?? 0, applications: a.count ?? 0, bookings: b.count ?? 0 };
-}
+});

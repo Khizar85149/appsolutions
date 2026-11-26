@@ -12,11 +12,10 @@ type Props = {
 };
 
 export default async function EditContentPage({ params, searchParams }: Props) {
-  await requireAdmin();
   const { table, slug } = await params;
   if (!isContentTable(table)) notFound();
   const def = TABLES[table];
-  const [row, options, query] = await Promise.all([getContent(table, slug), loadRefOptions(table), searchParams]);
+  const [, row, options, query] = await Promise.all([requireAdmin(), getContent(table, slug), loadRefOptions(table), searchParams]);
   if (!row) notFound();
 
   return (

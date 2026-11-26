@@ -6,6 +6,9 @@ import { site } from "@/lib/site";
 import { getAdmin } from "@/server/admin/session";
 import { isSupabaseConfigured } from "@/server/env";
 
+/** This page checks for an existing session before showing anything, so it renders per request. */
+export const instant = false;
+
 export default async function AdminLoginPage() {
   if (await getAdmin()) redirect("/admin");
 

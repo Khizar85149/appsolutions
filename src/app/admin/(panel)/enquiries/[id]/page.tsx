@@ -7,9 +7,8 @@ import { requireAdmin } from "@/server/admin/session";
 type Props = { params: Promise<{ id: string }> };
 
 export default async function EnquiryPage({ params }: Props) {
-  await requireAdmin();
   const { id } = await params;
-  const m = await getInboxItem("contact_messages", id);
+  const [, m] = await Promise.all([requireAdmin(), getInboxItem("contact_messages", id)]);
   if (!m) notFound();
 
   const subject = encodeURIComponent("Your enquiry to Apps Solutions Tech");

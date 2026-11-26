@@ -8,9 +8,8 @@ import { requireAdmin } from "@/server/admin/session";
 type Props = { params: Promise<{ id: string }> };
 
 export default async function ApplicationPage({ params }: Props) {
-  await requireAdmin();
   const { id } = await params;
-  const a = await getInboxItem("job_applications", id);
+  const [, a] = await Promise.all([requireAdmin(), getInboxItem("job_applications", id)]);
   if (!a) notFound();
 
   const link = /^https?:\/\//i.test(a.link) ? a.link : `https://${a.link}`;

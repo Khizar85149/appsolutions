@@ -22,8 +22,8 @@ const row = "flex items-center justify-between gap-4 px-5 py-3.5 transition-colo
 const none = "px-5 py-8 text-center text-sm text-stone";
 
 export default async function AdminOverviewPage() {
-  await requireAdmin();
-  const o = await getOverview();
+  // The access check and the query run together; a failed check redirects and discards the data.
+  const [, o] = await Promise.all([requireAdmin(), getOverview()]);
 
   return (
     <>

@@ -7,9 +7,8 @@ import { requireAdmin } from "@/server/admin/session";
 type Props = { params: Promise<{ id: string }> };
 
 export default async function BookingPage({ params }: Props) {
-  await requireAdmin();
   const { id } = await params;
-  const b = await getInboxItem("bookings", id);
+  const [, b] = await Promise.all([requireAdmin(), getInboxItem("bookings", id)]);
   if (!b) notFound();
 
   const minutes = Math.round((Date.parse(b.ends_at) - Date.parse(b.starts_at)) / 60000);

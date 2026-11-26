@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useActionState, useRef, useState, useTransition, type ReactNode } from "react";
+import { Suspense, useActionState, useRef, useState, useTransition, type ReactNode } from "react";
 import { STATUSES, statusLabel, type InboxTable } from "@/lib/admin-schema";
 import {
   addBlock,
@@ -16,10 +16,31 @@ import {
   type Result,
 } from "@/server/admin/actions";
 
+interface NavLinkProps {
+  href: string;
+  exact?: boolean;
+  /** Small count shown at the end of the link. */
+  badge?: ReactNode;
+  children: ReactNode;
+}
+
 /** Sidebar link that knows when it is the current section. */
-export function NavLink({ href, exact = false, badge, children }: { href: string; exact?: boolean; badge?: number; children: ReactNode }) {
+export function NavLink(props: NavLinkProps) {
+  // The address is only known in the browser, so the plain link is what the server sends first.
+  return (
+    <Suspense fallback={<NavAnchor {...props} active={false} />}>
+      <CurrentNavLink {...props} />
+    </Suspense>
+  );
+}
+
+function CurrentNavLink(props: NavLinkProps) {
   const pathname = usePathname();
-  const active = exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+  const { href, exact = false } = props;
+  return <NavAnchor {...props} active={exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`)} />;
+}
+
+function NavAnchor({ href, badge, children, active }: NavLinkProps & { active: boolean }) {
   return (
     <Link
       href={href}
@@ -29,9 +50,7 @@ export function NavLink({ href, exact = false, badge, children }: { href: string
       }`}
     >
       {children}
-      {badge ? (
-        <span className="ml-auto rounded-full bg-lime px-1.5 text-[0.6875rem] font-semibold leading-5 text-ink">{badge}</span>
-      ) : null}
+      {badge}
     </Link>
   );
 }

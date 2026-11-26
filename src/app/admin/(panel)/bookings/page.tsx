@@ -9,10 +9,9 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 const VIEWS = ["upcoming", "past", "cancelled"] as const;
 
 export default async function BookingsPage({ searchParams }: Props) {
-  await requireAdmin();
   const { view } = await searchParams;
   const current = VIEWS.find((v) => v === view) ?? "upcoming";
-  const [bookings, blocks] = await Promise.all([listBookings(current), listBlocks()]);
+  const [, bookings, blocks] = await Promise.all([requireAdmin(), listBookings(current), listBlocks()]);
 
   return (
     <>

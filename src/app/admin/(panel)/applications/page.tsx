@@ -7,10 +7,9 @@ import { requireAdmin } from "@/server/admin/session";
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 export default async function ApplicationsPage({ searchParams }: Props) {
-  await requireAdmin();
   const { status } = await searchParams;
   const current = typeof status === "string" && (STATUSES.job_applications as readonly string[]).includes(status) ? status : "all";
-  const applications = await listInbox("job_applications", current === "all" ? undefined : current);
+  const [, applications] = await Promise.all([requireAdmin(), listInbox("job_applications", current === "all" ? undefined : current)]);
 
   return (
     <>
