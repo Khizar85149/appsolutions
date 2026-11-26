@@ -323,6 +323,119 @@ details.faq[open] .faq-icon {
 .faq-icon {
   transition: transform 180ms ease;
 }
+
+/* ------------------------------------------------------------------ */
+/* Admin panel (/admin): denser controls on white cards                */
+/* ------------------------------------------------------------------ */
+.admin {
+  font-size: 0.9375rem;
+}
+
+.admin .field {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  font-size: 0.9375rem;
+}
+
+.admin textarea.field {
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.admin .label {
+  font-size: 0.8125rem;
+}
+
+.acard {
+  background: #fff;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.75rem;
+}
+
+.abtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  padding: 0.375rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.abtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.abtn-primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.abtn-primary:hover:not(:disabled) {
+  background: #2c2e27;
+}
+
+.abtn-ghost {
+  background: #fff;
+  border-color: var(--color-rule);
+  color: var(--color-ink);
+}
+
+.abtn-ghost:hover:not(:disabled) {
+  border-color: var(--color-ink);
+}
+
+.abtn-danger {
+  background: #fff;
+  border-color: var(--color-rule);
+  color: var(--color-danger);
+}
+
+.abtn-danger:hover:not(:disabled) {
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 6%, #fff);
+}
+
+.atable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.atable th {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--color-rule);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-stone);
+  white-space: nowrap;
+}
+
+.atable td {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--color-rule);
+  vertical-align: middle;
+}
+
+.atable tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.atable tbody tr {
+  transition: background-color 120ms ease;
+}
+
+.atable tbody tr:hover {
+  background: var(--color-card);
+}
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -15,11 +15,13 @@ import {
   UserPlus,
   VideoCamera,
 } from "@phosphor-icons/react/dist/ssr";
+import { Honeypot } from "@/components/honeypot";
 import { site } from "@/lib/site";
-import { submitLead } from "@/lib/submit";
 import type { ConsultationType } from "@/lib/types";
+import { bookConsultation } from "@/server/actions/booking";
 import {
   buildIcs,
+  type BusyInterval,
   dateKeyInZone,
   formatDateKey,
   formatTime,
@@ -29,7 +31,7 @@ import {
   listTimeZones,
   timeZoneLabel,
   toDateKey,
-} from "./availability";
+} from "@/lib/scheduling";
 
 type Step = 1 | 2 | 3;
 
@@ -83,6 +85,12 @@ export function Scheduler({ session }: { session: ConsultationType }) {
   const [showGuests, setShowGuests] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [sending, setSending] = useState(false);
+  const [failure, setFailure] = useState("");
+  const [notice, setNotice] = useState("");
+  // Booked and blocked time from the server. null until the first answer arrives.
+  const [busy, setBusy] = useState<BusyInterval[] | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [reload, setReload] = useState(0);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const timesRef = useRef<HTMLDivElement>(null);
@@ -106,9 +114,29 @@ export function Scheduler({ session }: { session: ConsultationType }) {
 
   // Recalculate open slots at most every ten minutes.
   const bucket = Math.floor(now / 600000);
+
+  // Load existing bookings and blocked time, again every ten minutes and after a clash.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/availability", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+      .then((data: { busy?: BusyInterval[] }) => {
+        if (cancelled) return;
+        setBusy(Array.isArray(data.busy) ? data.busy : []);
+        setLoadFailed(false);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [bucket, reload]);
+
+  const ready = mounted && busy !== null;
   const availability = useMemo(
-    () => (mounted ? getAvailability(bucket * 600000, timeZone, session.duration) : new Map<string, number[]>()),
-    [mounted, bucket, timeZone, session.duration],
+    () => (mounted && busy ? getAvailability(bucket * 600000, timeZone, session.duration, busy) : new Map<string, number[]>()),
+    [mounted, busy, bucket, timeZone, session.duration],
   );
 
   const todayKey = dateKeyInZone(now, timeZone);
@@ -137,6 +165,7 @@ export function Scheduler({ session }: { session: ConsultationType }) {
   const nowInZone = formatTime(now, timeZone, hour12);
 
   const chooseDate = (key: string) => {
+    setNotice("");
     setDateKey(key);
     setSlot(null);
     requestAnimationFrame(() => timesRef.current?.focus());
@@ -170,11 +199,11 @@ export function Scheduler({ session }: { session: ConsultationType }) {
       return;
     }
     setSending(true);
-    await submitLead({
-      kind: "consultation",
+    setFailure("");
+    const website = new FormData(e.currentTarget).get("website");
+    const result = await bookConsultation({
       session: session.slug,
-      startsAt: new Date(slot).toISOString(),
-      durationMinutes: session.duration,
+      startsAt: slot,
       timeZone,
       name: form.name.trim(),
       email: form.email.trim(),
@@ -183,8 +212,22 @@ export function Scheduler({ session }: { session: ConsultationType }) {
       guests,
       budget: form.budget,
       notes: form.notes.trim(),
-    });
+      website: typeof website === "string" ? website : "",
+    }).catch(() => ({ ok: false as const, message: "We could not reach the server. Check your connection and try again." }));
     setSending(false);
+    if (!result.ok) {
+      if ("code" in result && result.code === "slot_taken") {
+        // Someone else took the time. Return to the calendar with fresh availability.
+        setNotice(result.message);
+        setSlot(null);
+        setReload((n) => n + 1);
+        setStep(1);
+        return;
+      }
+      if ("fields" in result && result.fields) setErrors(result.fields);
+      setFailure(result.message);
+      return;
+    }
     setStep(3);
   };
 
@@ -352,7 +395,23 @@ export function Scheduler({ session }: { session: ConsultationType }) {
               Select a date and time
             </h3>
 
-            {!mounted ? (
+            {notice && (
+              <p role="alert" className="mt-4 rounded-lg border border-rule bg-paper px-4 py-3 text-sm">
+                {notice}
+              </p>
+            )}
+
+            {!ready && loadFailed ? (
+              <div className="mt-6 max-w-[26rem]">
+                <p className="body text-stone">
+                  The calendar could not be loaded. Check your connection and try again, or email {site.email} and we will
+                  find a time.
+                </p>
+                <button type="button" onClick={() => setReload((n) => n + 1)} className="btn btn-outline btn-sm mt-5">
+                  Try again
+                </button>
+              </div>
+            ) : !ready ? (
               <div aria-hidden="true" className="mt-6 max-w-[26rem]">
                 <div className="h-6 w-40 rounded bg-paper-deep" />
                 <div className="mt-6 grid grid-cols-7 gap-2">
@@ -643,6 +702,12 @@ export function Scheduler({ session }: { session: ConsultationType }) {
                 </Link>
                 . We use your details to prepare for this call and nothing else.
               </p>
+              <Honeypot />
+              {failure && (
+                <p role="alert" className="text-sm text-danger">
+                  {failure}
+                </p>
+              )}
               <button type="submit" disabled={sending} className="btn btn-ink w-full disabled:opacity-60 sm:w-auto">
                 {sending ? "Scheduling" : "Schedule meeting"}
               </button>

@@ -2,13 +2,15 @@
 
 import { useRef, useState } from "react";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
-import { submitLead } from "@/lib/submit";
+import { Honeypot } from "@/components/honeypot";
+import { MAX_RESUME_MB, RESUME_TYPES } from "@/lib/uploads";
+import { submitApplication } from "@/server/actions/application";
 
 type Fields = "name" | "email" | "phone" | "link" | "resume" | "note";
 type Errors = Partial<Record<Fields, string>>;
 
-const MAX_FILE_MB = 5;
-const ACCEPT = [".pdf", ".doc", ".docx"];
+const MAX_FILE_MB = MAX_RESUME_MB;
+const ACCEPT = Object.keys(RESUME_TYPES);
 
 function validate(values: Record<Exclude<Fields, "resume">, string>, file: File | null): Errors {
   const e: Errors = {};
@@ -27,6 +29,7 @@ export function ApplicationForm({ jobSlug, jobTitle }: { jobSlug: string; jobTit
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "failed">("idle");
+  const [failure, setFailure] = useState("");
   const [sentTo, setSentTo] = useState("");
 
   const read = () => {
@@ -59,17 +62,19 @@ export function ApplicationForm({ jobSlug, jobTitle }: { jobSlug: string; jobTit
     }
     setStatus("sending");
     try {
-      await submitLead({
-        kind: "application",
-        jobSlug,
-        jobTitle,
-        ...values,
-        resumeName: file?.name,
-        resumeSize: file?.size,
-      });
+      const data = new FormData(formRef.current!);
+      data.set("jobSlug", jobSlug);
+      const result = await submitApplication(data);
+      if (!result.ok) {
+        if (result.fields) setErrors(result.fields as Errors);
+        setFailure(result.message);
+        setStatus("failed");
+        return;
+      }
       setSentTo(values.email.trim());
       setStatus("done");
     } catch {
+      setFailure("Your application could not be sent. Check your connection and try again.");
       setStatus("failed");
     }
   };
@@ -171,9 +176,10 @@ export function ApplicationForm({ jobSlug, jobTitle }: { jobSlug: string; jobTit
         </div>
       </div>
 
+      <Honeypot />
       {status === "failed" && (
         <p role="alert" className="mt-5 text-sm text-danger">
-          Your application could not be sent. Check your connection and try again.
+          {failure}
         </p>
       )}
 

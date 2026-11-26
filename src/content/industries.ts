@@ -1,7 +1,10 @@
 import type { Industry } from "@/lib/types";
 
 /**
- * Industry content. Slugs, names and icons mirror industryNav in src/lib/site.ts.
+ * Industry content.
+ * This is the starting content: it seeds the database (supabase/seed.sql) and is
+ * served only as a fallback if the database cannot be reached. Once Supabase is
+ * connected, edit content there, not here.
  * Figures in `stats` are sample values. REPLACE with audited numbers before launch.
  */
 export const industries: Industry[] = [

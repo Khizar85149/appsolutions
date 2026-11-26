@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
-import { CONSULTATION_HREF, industryNav, serviceNav, site } from "@/lib/site";
+import { CONSULTATION_HREF, site } from "@/lib/site";
+import { getIndustryNav, getServiceNav } from "@/server/content";
 import { Logo } from "./logo";
 
 const company = [
@@ -30,7 +31,8 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   );
 }
 
-export function Footer() {
+export async function Footer() {
+  const [serviceNav, industryNav] = await Promise.all([getServiceNav(), getIndustryNav()]);
   return (
     <footer className="on-ink border-t border-ink-line bg-ink text-paper">
       <div className="wrap py-16 md:py-20">

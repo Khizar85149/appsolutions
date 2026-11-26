@@ -44,36 +44,13 @@ export const site = {
   },
 } as const;
 
+/** A menu entry for a service or an industry. Built from the database in src/server/content.ts. */
 export interface NavItem {
   slug: string;
   name: string;
   blurb: string;
   icon: IconKey;
 }
-
-/** Canonical service slugs. Full content lives in src/content/services.ts. */
-export const serviceNav: NavItem[] = [
-  { slug: "full-stack-development", name: "Full Stack Development", blurb: "Web platforms built end to end by one accountable team.", icon: "stack" },
-  { slug: "frontend-development", name: "Front End Development", blurb: "Fast, accessible interfaces in React and Next.js.", icon: "browser" },
-  { slug: "erp-development", name: "ERP System Development", blurb: "One system for finance, inventory, HR and operations.", icon: "erp" },
-  { slug: "ai-chatbots", name: "AI Chatbots", blurb: "Assistants that answer from your data and know when to hand over.", icon: "chat" },
-  { slug: "ai-automation", name: "AI Automation", blurb: "Remove the manual work between your systems.", icon: "automation" },
-  { slug: "mobile-app-development", name: "Mobile App Development", blurb: "Native and cross-platform apps for iOS and Android.", icon: "mobile" },
-  { slug: "custom-pos-systems", name: "Custom POS Systems", blurb: "Point of sale that keeps selling when the internet drops.", icon: "pos" },
-  { slug: "management-software", name: "Hospital and Restaurant Software", blurb: "Management systems shaped around how your floor runs.", icon: "management" },
-];
-
-/** Canonical industry slugs. Full content lives in src/content/industries.ts. */
-export const industryNav: NavItem[] = [
-  { slug: "healthcare", name: "Healthcare", blurb: "Hospital management, patient portals and clinical workflows.", icon: "healthcare" },
-  { slug: "restaurants-hospitality", name: "Restaurants and Hospitality", blurb: "POS, kitchen display, ordering and multi-branch reporting.", icon: "restaurant" },
-  { slug: "retail-ecommerce", name: "Retail and E-commerce", blurb: "Unified inventory, storefronts and in-store point of sale.", icon: "retail" },
-  { slug: "fintech", name: "Financial Services", blurb: "Secure platforms, reconciliations and client onboarding.", icon: "finance" },
-  { slug: "logistics", name: "Logistics and Supply Chain", blurb: "Dispatch, tracking and warehouse operations.", icon: "logistics" },
-  { slug: "real-estate", name: "Real Estate", blurb: "Listings, CRM and property management portals.", icon: "realestate" },
-  { slug: "education", name: "Education", blurb: "Learning platforms and school administration systems.", icon: "education" },
-  { slug: "manufacturing", name: "Manufacturing", blurb: "Production planning, quality control and ERP.", icon: "manufacturing" },
-];
 
 export const mainNav = [
   { href: "/services", label: "Services" },

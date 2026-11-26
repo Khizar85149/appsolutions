@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
-import { industryNav } from "@/lib/site";
+import { getIndustryNav } from "@/server/content";
 import type { CaseStudy, CoverTone } from "@/lib/types";
 
 export const coverTone: Record<CoverTone, { panel: string; sub: string }> = {
@@ -10,9 +10,9 @@ export const coverTone: Record<CoverTone, { panel: string; sub: string }> = {
   sage: { panel: "bg-[#cfd8c4] text-ink", sub: "text-ink/65" },
 };
 
-export function CaseCard({ study }: { study: CaseStudy }) {
+export async function CaseCard({ study }: { study: CaseStudy }) {
   const tone = coverTone[study.tone];
-  const industry = industryNav.find((i) => i.slug === study.industry)?.name ?? study.industry;
+  const industry = (await getIndustryNav()).find((i) => i.slug === study.industry)?.name ?? study.industry;
 
   return (
     <article className="h-full">

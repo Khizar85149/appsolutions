@@ -4,18 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, CaretDown, List, X } from "@phosphor-icons/react/dist/ssr";
-import { CONSULTATION_HREF, industryNav, mainNav, serviceNav } from "@/lib/site";
+import { CONSULTATION_HREF, mainNav, type NavItem } from "@/lib/site";
 import { Icon } from "./icon";
 import { Logo } from "./logo";
 
 type Menu = "services" | "industries" | null;
 
-const menus = {
-  services: { base: "/services", items: serviceNav, all: "All services" },
-  industries: { base: "/industries", items: industryNav, all: "All industries" },
-} as const;
-
-export function Header() {
+export function Header({ services, industries }: { services: NavItem[]; industries: NavItem[] }) {
+  const menus = {
+    services: { base: "/services", items: services, all: "All services" },
+    industries: { base: "/industries", items: industries, all: "All industries" },
+  };
   const pathname = usePathname();
   const [open, setOpen] = useState<Menu>(null);
   const [mobile, setMobile] = useState(false);

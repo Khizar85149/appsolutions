@@ -1,7 +1,10 @@
 import type { Service } from "@/lib/types";
 
 /**
- * Service content. Slugs, names and icons mirror serviceNav in src/lib/site.ts.
+ * Service content.
+ * This is the starting content: it seeds the database (supabase/seed.sql) and is
+ * served only as a fallback if the database cannot be reached. Once Supabase is
+ * connected, edit content there, not here.
  * Figures in `outcomes` are sample values. REPLACE with audited numbers before launch.
  */
 export const services: Service[] = [

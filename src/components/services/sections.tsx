@@ -3,7 +3,7 @@ import { ArrowUpRight, Check } from "@phosphor-icons/react/dist/ssr";
 import { CaseCard } from "@/components/case-card";
 import { Icon } from "@/components/icon";
 import { Button, SectionHeading } from "@/components/ui";
-import { getCaseStudy } from "@/content/case-studies";
+import { getCaseStudies } from "@/server/content";
 import { CONSULTATION_HREF, site } from "@/lib/site";
 import type { CaseStudy, IconKey, TitledText } from "@/lib/types";
 
@@ -118,8 +118,9 @@ export function LinkRows({
 }
 
 /** Related case studies. Renders nothing when no slug resolves. */
-export function RelatedCases({ slugs, title, lead }: { slugs: string[]; title: string; lead?: string }) {
-  const studies = slugs.map((s) => getCaseStudy(s)).filter((s): s is CaseStudy => Boolean(s));
+export async function RelatedCases({ slugs, title, lead }: { slugs: string[]; title: string; lead?: string }) {
+  const all = await getCaseStudies();
+  const studies = slugs.map((s) => all.find((c) => c.slug === s)).filter((s): s is CaseStudy => Boolean(s));
   if (studies.length === 0) return null;
   return (
     <section className="section border-t border-rule">

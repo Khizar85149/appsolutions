@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
-import { CONSULTATION_HREF, serviceNav } from "@/lib/site";
-import { submitLead } from "@/lib/submit";
+import { Honeypot } from "@/components/honeypot";
+import { CONSULTATION_HREF, site } from "@/lib/site";
+import { sendContactMessage } from "@/server/actions/contact";
 
 const BUDGETS = [
   "Under $25,000",
@@ -43,10 +44,11 @@ function validate(v: Values): Errors {
   return e;
 }
 
-export function ContactForm() {
+export function ContactForm({ services }: { services: { slug: string; name: string }[] }) {
   const [values, setValues] = useState<Values>(empty);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [failure, setFailure] = useState("");
   const successRef = useRef<HTMLDivElement>(null);
 
   const set = (key: Key) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -73,10 +75,17 @@ export function ContactForm() {
       return;
     }
     setStatus("sending");
-    await submitLead({
-      kind: "contact",
-      ...Object.fromEntries(Object.entries(values).map(([k, v]) => [k, v.trim()])),
-    });
+    setFailure("");
+    const website = new FormData(e.currentTarget).get("website");
+    const result = await sendContactMessage({ ...values, website: typeof website === "string" ? website : "" }).catch(
+      () => ({ ok: false as const, message: "" }),
+    );
+    if (!result.ok) {
+      if ("fields" in result && result.fields) setErrors(result.fields as Errors);
+      setFailure(result.message || "We could not send this just now. Check your connection and try again.");
+      setStatus("idle");
+      return;
+    }
     setStatus("sent");
     requestAnimationFrame(() => successRef.current?.focus());
   };
@@ -129,7 +138,7 @@ export function ContactForm() {
       <Field id="service" label="Service of interest" error={errors.service}>
         <select className="field" required {...props("service")}>
           <option value="">Select a service</option>
-          {serviceNav.map((s) => (
+          {services.map((s) => (
             <option key={s.slug} value={s.slug}>
               {s.name}
             </option>
@@ -174,6 +183,17 @@ export function ContactForm() {
         </Link>
         . We use your details to reply to this enquiry and for nothing else. We never share them.
       </p>
+
+      <Honeypot />
+      {failure && (
+        <p role="alert" className="text-sm text-danger">
+          {failure} You can also email{" "}
+          <a href={`mailto:${site.email}`} className="link">
+            {site.email}
+          </a>
+          .
+        </p>
+      )}
 
       <button type="submit" disabled={status === "sending"} className="btn btn-ink w-full disabled:opacity-60 sm:w-auto">
         {status === "sending" ? "Sending" : "Send project brief"}

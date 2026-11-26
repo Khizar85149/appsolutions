@@ -76,6 +76,8 @@ export interface Service {
   industries: string[];
   caseStudies: string[];
   seo: Seo;
+  /** Set when the record comes from the database. Used for sitemap dates. */
+  updatedAt?: string;
 }
 
 export interface Industry {
@@ -95,6 +97,7 @@ export interface Industry {
   caseStudies: string[];
   faqs: Faq[];
   seo: Seo;
+  updatedAt?: string;
 }
 
 export type CoverTone = "ink" | "lime" | "sand" | "sage";
@@ -122,6 +125,7 @@ export interface CaseStudy {
   stack: string[];
   quote?: { text: string; role: string };
   seo: Seo;
+  updatedAt?: string;
 }
 
 export interface Job {
