@@ -61,12 +61,24 @@ export async function signIn(_previous: LoginState, form: FormData): Promise<Log
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
   });
   const { data, error } = await auth.auth.signInWithPassword({ email, password });
-  if (error || !data.user) return wrong;
+  if (error || !data.user) {
+    // The visitor always sees the same message. The real reason goes to the server log
+    // (Vercel > Logs), e.g. "Invalid login credentials" or "Email not confirmed".
+    console.warn(`[admin] sign-in refused for ${email}: Supabase Auth said "${error?.message ?? "no user returned"}"`);
+    return wrong;
+  }
   await auth.auth.signOut({ scope: "local" }).catch(() => undefined);
 
   // Having a Supabase user is not enough. The user must be listed as an admin.
   const allowed = await db().from("admin_users").select("user_id").eq("user_id", data.user.id).limit(1);
-  if (allowed.error || !allowed.data || allowed.data.length === 0) return wrong;
+  if (allowed.error) {
+    console.error(`[admin] sign-in for ${email}: could not read admin_users: ${allowed.error.message}. Run supabase/schema.sql.`);
+    return wrong;
+  }
+  if (!allowed.data || allowed.data.length === 0) {
+    console.warn(`[admin] sign-in refused for ${email}: the password is correct but user ${data.user.id} is not in public.admin_users.`);
+    return wrong;
+  }
 
   await createSession({ id: data.user.id, email: data.user.email ?? email });
   redirect("/admin");
